@@ -39,7 +39,6 @@ class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    #tags = TagSerializer(read_only=False, many=True)
     tags = TagSerializer(queryset=Tag.objects.all(), many=True)
     type = CompanyTypeSerializer(read_only=False)
     logo = LogoUploadSerializer()
