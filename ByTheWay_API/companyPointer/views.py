@@ -99,15 +99,57 @@ class TagDetails(APIView):
 
     def delete(self, request, pk, format=None):
         tag = self.get_object(pk)
-        company.delete()
+        tag.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class TypeViewSet(viewsets.ModelViewSet):
+
+class TypeList(APIView):
     """
-        Api endpoint that allows tags to be viewed or edited
+        List all companies or create a new one.
     """
-    queryset = CompanyType.objects.all()
-    serializer_class = CompanyTypeSerializer
+
+    def get(self, request, format=None):
+        types = CompanyType.objects.all()
+        serializer = CompanyTypeSerializer(types, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CompanyTypeSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TypeDetails(APIView):
+    """
+        Retrieve, update or delete a tag instance.
+    """
+
+    def get_object(self, pk):
+        try:
+            return CompanyType.objects.get(pk=pk)
+        except CompanyType.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        type = self.get_object(pk)
+        serializer = CompanyTypeSerializer(type, context={'request': request})
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        type = self.get_object(pk)
+        serializer = CompanyTypeSerializer(type, data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        type = self.get_object(pk)
+        type.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class LogoViewSet(viewsets.ModelViewSet):
