@@ -12,7 +12,7 @@ class LogoUploadSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("created", "owner", "datafile")
 
 
-class TagSerializer(PrimaryKeyRelatedField, serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
         fields = ("name",)
@@ -28,7 +28,9 @@ class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    tags = TagSerializer(queryset=Tag.objects.all(), many=True)
+    #tags = TagSerializer(queryset=Tag.objects.all(), many=True)
+    tags = TagSerializer(many=True)
+
     type = CompanyTypeSerializer(read_only=False)
     logo = LogoUploadSerializer()
 

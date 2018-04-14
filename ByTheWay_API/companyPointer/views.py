@@ -55,21 +55,52 @@ class CompanyDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CompanyViewSet(viewsets.ModelViewSet):
+class TagsList(APIView):
     """
-        Api Endpoint that allows company to be viewed or edited
+        List all tags or create a new one.
     """
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+    def get(self, request, format=None):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = TagSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TagsViewSet(viewsets.ModelViewSet):
+class TagDetails(APIView):
     """
-        Api endpoint that allows tags to be viewed or edited
+        Retrieve, update or delete a tag instance.
     """
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
 
+    def get_object(self, pk):
+        try:
+            return Tag.objects.get(pk=pk)
+        except Tag.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        tag = self.get_object(pk)
+        serializer = TagSerializer(tag, context={'request': request})
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        tag = self.get_object(pk)
+        serializer = TagSerializer(tag, data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        tag = self.get_object(pk)
+        company.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class TypeViewSet(viewsets.ModelViewSet):
     """
