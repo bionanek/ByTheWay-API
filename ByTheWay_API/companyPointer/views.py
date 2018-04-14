@@ -105,7 +105,7 @@ class TagDetails(APIView):
 
 class TypeList(APIView):
     """
-        List all companies or create a new one.
+        List all types or create a new one.
     """
 
     def get(self, request, format=None):
@@ -123,7 +123,7 @@ class TypeList(APIView):
 
 class TypeDetails(APIView):
     """
-        Retrieve, update or delete a tag instance.
+        Retrieve, update or delete a type instance.
     """
 
     def get_object(self, pk):
@@ -152,9 +152,50 @@ class TypeDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class LogoViewSet(viewsets.ModelViewSet):
+class LogoList(APIView):
     """
-        Api endpoint that allows logos to be viewed or edited
+        List all logos or create a new one.
     """
-    queryset = LogoUpload.objects.all()
-    serializer_class = LogoUploadSerializer
+
+    def get(self, request, format=None):
+        logos = LogoUpload.objects.all()
+        serializer = LogoUploadSerializer(logos, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = LogoUploadSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoDetails(APIView):
+    """
+        Retrieve, update or delete a logo instance.
+    """
+
+    def get_object(self, pk):
+        try:
+            return LogoUpload.objects.get(pk=pk)
+        except LogoUpload.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        logo = self.get_object(pk)
+        serializer = LogoUploadSerializer(logo, context={'request': request})
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        logo = self.get_object(pk)
+        serializer = LogoUploadSerializer(logo, data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        logo = self.get_object(pk)
+        logo.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
