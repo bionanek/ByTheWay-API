@@ -1,201 +1,44 @@
-from django.contrib.auth.models import Group, User
-from django.http import Http404
-from rest_framework import viewsets, status
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import generics
 
 from companyPointer.models import Company, Tag, LogoUpload, CompanyType
 from companyPointer.serializers import CompanySerializer, TagSerializer, LogoUploadSerializer, CompanyTypeSerializer
 
 
-class CompanyList(APIView):
-    """
-        List all companies or create a new one.
-    """
-    def get(self, request, format=None):
-        companies = Company.objects.all()
-        serializer = CompanySerializer(companies, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = CompanySerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class CompanyList(generics.ListCreateAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
 
-class CompanyDetails(APIView):
-    """
-        Retrieve, update or delete a company instance.
-    """
-    def get_object(self, pk):
-        try:
-            return Company.objects.get(pk=pk)
-        except Company.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        company = self.get_object(pk)
-        serializer = CompanySerializer(company, context={'request': request})
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        company = self.get_object(pk)
-        serializer = CompanySerializer(company, data=request.data, context={'request': request})
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        company = self.get_object(pk)
-        company.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class CompanyDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
 
-class TagsList(APIView):
-    """
-        List all tags or create a new one.
-    """
-    def get(self, request, format=None):
-        tags = Tag.objects.all()
-        serializer = TagSerializer(tags, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = TagSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class TagsList(generics.ListCreateAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
 
-class TagDetails(APIView):
-    """
-        Retrieve, update or delete a tag instance.
-    """
-
-    def get_object(self, pk):
-        try:
-            return Tag.objects.get(pk=pk)
-        except Tag.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        tag = self.get_object(pk)
-        serializer = TagSerializer(tag, context={'request': request})
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        tag = self.get_object(pk)
-        serializer = TagSerializer(tag, data=request.data, context={'request': request})
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        tag = self.get_object(pk)
-        tag.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class TagDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
 
-class TypeList(APIView):
-    """
-        List all types or create a new one.
-    """
-
-    def get(self, request, format=None):
-        types = CompanyType.objects.all()
-        serializer = CompanyTypeSerializer(types, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = CompanyTypeSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class TypeList(generics.ListCreateAPIView):
+    queryset = CompanyType.objects.all()
+    serializer_class = CompanyTypeSerializer
 
 
-class TypeDetails(APIView):
-    """
-        Retrieve, update or delete a type instance.
-    """
-
-    def get_object(self, pk):
-        try:
-            return CompanyType.objects.get(pk=pk)
-        except CompanyType.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        type = self.get_object(pk)
-        serializer = CompanyTypeSerializer(type, context={'request': request})
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        type = self.get_object(pk)
-        serializer = CompanyTypeSerializer(type, data=request.data, context={'request': request})
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        type = self.get_object(pk)
-        type.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class TypeDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CompanyType.objects.all()
+    serializer_class = CompanyTypeSerializer
 
 
-class LogoList(APIView):
-    """
-        List all logos or create a new one.
-    """
-
-    def get(self, request, format=None):
-        logos = LogoUpload.objects.all()
-        serializer = LogoUploadSerializer(logos, many=True, context={'request': request})
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        serializer = LogoUploadSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class LogoList(generics.ListCreateAPIView):
+    queryset = LogoUpload.objects.all()
+    serializer_class = LogoUploadSerializer
 
 
-class LogoDetails(APIView):
-    """
-        Retrieve, update or delete a logo instance.
-    """
-
-    def get_object(self, pk):
-        try:
-            return LogoUpload.objects.get(pk=pk)
-        except LogoUpload.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        logo = self.get_object(pk)
-        serializer = LogoUploadSerializer(logo, context={'request': request})
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        logo = self.get_object(pk)
-        serializer = LogoUploadSerializer(logo, data=request.data, context={'request': request})
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        logo = self.get_object(pk)
-        logo.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class LogoDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LogoUpload.objects.all()
+    serializer_class = LogoUploadSerializer
