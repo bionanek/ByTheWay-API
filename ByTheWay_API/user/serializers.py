@@ -1,12 +1,8 @@
-import datetime
-
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
-from rest_framework.relations import HyperlinkedIdentityField, PrimaryKeyRelatedField
+from rest_framework.relations import HyperlinkedIdentityField
 
-from companyPointer.models import Tag, Company
-from companyPointer.serializers import TagSerializer, CompanySerializer
-from user.models import Profile
+from user.models import Profile, Picture
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,13 +19,19 @@ class GroupSerializers(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name')
 
 
+class PictureSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Picture
+        fields = ("created", "owner", "datafile")
+
+
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    interests = TagSerializer(many=True, read_only=True)
-    favourites = CompanySerializer(many=True, read_only=True)
+
+    profile_pic = PictureSerializer()
 
     class Meta:
         model = Profile
-        fields = ('user', 'birthdate', 'created', 'related_company',
+        fields = ('user', 'profile_pic', 'birthdate', 'created', 'related_company',
                   'interests', 'favourites', 'last_latitude', 'last_longitude')
 
     def create(self, validated_data):
@@ -48,10 +50,16 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
         #profile = Profile.objects.create(user=user, birthdate=birthdate, created=created, related_company=related_company,
         #                                 last_latitude=last_latitude, last_longitude=last_longitude)
 
-        profile = Profile.objects.create(**validated_data)
+        profile_pic_data = validated_data.pop('profile_pic')
+        profile_pic = Picture.objects.create(**profile_pic_data)
+
+        profile = Profile.objects.create(profile_pic=profile_pic, **validated_data)
         for interest in interests:
             profile.interests.add(interest)
         for fav in favourites:
             profile.favourites.add(fav)
 
         return profile
+
+
+

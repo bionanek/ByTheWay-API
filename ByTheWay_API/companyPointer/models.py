@@ -28,3 +28,6 @@ class Company(models.Model):
     tags = models.ManyToManyField(Tag, related_name="company_tags")
     type = models.ForeignKey(CompanyType, related_name="company_type", to_field="id", on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

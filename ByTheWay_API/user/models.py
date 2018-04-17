@@ -4,8 +4,15 @@ from django.db import models
 from companyPointer.models import Company, Tag
 
 
+class Picture(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(User, to_field='id', on_delete=models.CASCADE)
+    datafile = models.FileField()
+
+
 class Profile(models.Model):
     user = models.ForeignKey(User, to_field="id", on_delete=models.CASCADE)
+    profile_pic = models.ForeignKey(Picture, related_name="profile_pic", blank=True, default=None, null=True, on_delete=models.CASCADE)
     birthdate = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     related_company = models.ForeignKey(Company, blank=True, default=None, null=True, on_delete=models.CASCADE)

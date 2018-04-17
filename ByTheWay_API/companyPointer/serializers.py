@@ -6,7 +6,6 @@ from .models import LogoUpload, Tag, CompanyType, Company
 
 
 class LogoUploadSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = LogoUpload
         fields = ("created", "owner", "datafile")
@@ -28,7 +27,6 @@ class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    #tags = TagSerializer(queryset=Tag.objects.all(), many=True)
     tags = TagSerializer(many=True)
 
     type = CompanyTypeSerializer(read_only=False)

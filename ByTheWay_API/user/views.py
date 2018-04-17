@@ -1,8 +1,18 @@
 from django.contrib.auth.models import User
 from rest_framework import generics
 
-from user.models import Profile
-from user.serializers import UserSerializer, ProfileSerializer
+from user.models import Profile, Picture
+from user.serializers import UserSerializer, ProfileSerializer, PictureSerializer
+
+
+class PicturesList(generics.ListCreateAPIView):
+    queryset = Picture.objects.all()
+    serializer_class = PictureSerializer
+
+
+class PictureDetails(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Picture.objects.all()
+    serializer_class = PictureSerializer
 
 
 class UserList(generics.ListCreateAPIView):
