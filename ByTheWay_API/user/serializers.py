@@ -20,6 +20,8 @@ class GroupSerializers(serializers.HyperlinkedModelSerializer):
 
 
 class PictureSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Picture
         fields = ("created", "owner", "datafile")

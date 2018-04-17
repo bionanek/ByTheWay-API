@@ -14,9 +14,7 @@ from django.conf.urls import url, include
 # ]
 
 urlpatterns = [
-    # url(r'^companies/$', views.CompanyList.as_view()),
-    # url(r'^companies/(?P<pk>[0-9]+)/$', views.CompanyDetails.as_view()),
-    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
     url(r'^', include('companyPointer.urls')),
-    url(r'^', include('user.urls'))
+    url(r'^', include('user.urls')),
+    url(r'^api-auth/', include('rest_framework.urls'))
 ]
