@@ -14,7 +14,7 @@ class CompanyList(generics.ListCreateAPIView):
 class CompanyDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 
 class TagsList(generics.ListCreateAPIView):

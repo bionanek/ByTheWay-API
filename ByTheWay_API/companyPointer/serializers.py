@@ -8,13 +8,13 @@ from .models import LogoUpload, Tag, CompanyType, Company
 class LogoUploadSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = LogoUpload
-        fields = ("created", "owner", "datafile")
+        fields = ("url", "id", "created", "owner", "datafile")
 
 
 class TagSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Tag
-        fields = ("name",)
+        fields = ("url", "id", "name")
 
 
 class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,18 +23,19 @@ class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = CompanyType
-        fields = ("id", "name")
+        fields = ("url", "id", "name")
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    tags = TagSerializer(many=True)
-
-    type = CompanyTypeSerializer(read_only=False)
+    # tags = TagSerializer(many=True)
+    tags = serializers.HyperlinkedIdentityField(view_name="tag-detail", format="html", many=True)
+    #type = CompanyTypeSerializer(read_only=False)
+    type = serializers.HyperlinkedIdentityField(view_name="companytype-detail", format="html", read_only=False)
     logo = LogoUploadSerializer()
 
     class Meta:
         model = Company
-        fields = ("name", "description", "logo", "pos_lat", "pos_lon", "tags", "type", "created")
+        fields = ("url", "id", "name", "description", "logo", "pos_lat", "pos_lon", "tags", "type", "created")
 
     def create(self, validated_data):
         logo_data = validated_data.pop('logo')

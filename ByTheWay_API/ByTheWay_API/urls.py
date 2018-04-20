@@ -13,8 +13,13 @@ from django.conf.urls import url, include
 #     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 # ]
 
+from rest_framework.schemas import get_schema_view
+
+schema_view = get_schema_view(title="ByTheWay API")
+
 urlpatterns = [
     url(r'^', include('companyPointer.urls')),
     url(r'^', include('user.urls')),
-    url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^schema/$', schema_view)
 ]
