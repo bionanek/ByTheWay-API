@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'companyPointer',
     'user',
     'rest_framework',
+    'chat',
 ]
 
 MIDDLEWARE = [
