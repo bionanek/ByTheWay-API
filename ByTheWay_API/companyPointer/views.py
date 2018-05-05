@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 
+from ByTheWay_API.general_permissions import IsOwnerOrReadOnly
 from companyPointer.models import Company, Tag, LogoUpload, CompanyType
-from companyPointer.permissions import IsOwnerOrReadOnly
 from companyPointer.serializers import CompanySerializer, TagSerializer, LogoUploadSerializer, CompanyTypeSerializer
 
 
