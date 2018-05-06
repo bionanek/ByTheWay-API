@@ -18,8 +18,8 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
-    namesList = CompanyType.objects.all().values_list('id', 'name')
-    name = serializers.ChoiceField(choices=namesList)
+    # namesList = CompanyType.objects.all().values_list('id', 'name')
+    # name = serializers.ChoiceField(choices=namesList)
 
     class Meta:
         model = CompanyType
