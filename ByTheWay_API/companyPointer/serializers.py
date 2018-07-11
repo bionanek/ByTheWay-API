@@ -27,8 +27,10 @@ class CompanyTypeSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
-    tags = serializers.HyperlinkedIdentityField(view_name="tag-detail", format="html", many=True)
-    type = serializers.HyperlinkedIdentityField(view_name="companytype-detail", format="html", read_only=False)
+    #tags = serializers.HyperlinkedIdentityField(view_name="tag-detail", format="html", many=True)
+    tags = TagSerializer(many=True)
+    #type = serializers.HyperlinkedIdentityField(view_name="companytype-detail", format="html", read_only=False)
+    type = CompanyTypeSerializer()
     logo = LogoUploadSerializer()
 
     class Meta:
