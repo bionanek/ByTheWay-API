@@ -7,7 +7,7 @@ coreschema==0.0.4
 Django==2.0.4
 django-sampledatahelper==0.4.1
 djangorestframework==3.8.2
-httpie==0.9.9
+httpie==1.0.3
 idna==2.6
 itypes==1.1.0
 Jinja2==2.10
